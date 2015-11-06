@@ -8,7 +8,7 @@ from traitlets import Unicode
 
 
 class RemoteUserLoginHandler(BaseHandler):
-    header_name = 'REMOTE_USER'
+    header_name = Unicode('REMOTE_USER', config=True)
 
     def get(self):
         header_name = self.header_name
