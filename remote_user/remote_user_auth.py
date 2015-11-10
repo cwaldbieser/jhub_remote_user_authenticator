@@ -33,7 +33,7 @@ class RemoteUserAuthenticator(Authenticator):
    
     def get_handlers(self, app):
         return [
-            (r'/remote_user_login', RemoteUserLoginHandler),
+            (r'/login', RemoteUserLoginHandler),
         ]
  
     @gen.coroutine
