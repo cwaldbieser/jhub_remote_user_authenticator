@@ -8,10 +8,9 @@ from traitlets import Unicode
 
 
 class RemoteUserLoginHandler(BaseHandler):
-    header_name = Unicode('REMOTE_USER', config=True)
 
     def get(self):
-        header_name = self.header_name
+        header_name = self.authenticator.header_name
         remote_user = self.request.headers.get(header_name, "")
         if remote_user == "":
             raise web.HTTPError(401)
@@ -25,18 +24,17 @@ class RemoteUserAuthenticator(Authenticator):
     """
     Accept the authenticated user name from the REMOTE_USER HTTP header.
     """
-    remote_user_header = Unicode(
-        "REMOTE_USER",
+    header_name = Unicode(
+        default_value='REMOTE_USER',
         config=True,
-        help="""HTTP header to inspect for the authenticated username."""
-    )
-   
+        help="""HTTP header to inspect for the authenticated username.""")
+
     def get_handlers(self, app):
         return [
             (r'/login', RemoteUserLoginHandler),
         ]
- 
+
     @gen.coroutine
     def authenticate(self, *args):
-        print("args: {0}".format(args))
         raise NotImplementedError()
+
