@@ -9,7 +9,13 @@ the REMOTE_USER header.
 Installation
 ------------
 
-This project folder must be on your PYTHONPATH.
+This package can be installed with `pip`:
+
+    cd jhub_remote_user_authenticator
+    pip install .
+
+Alternately, you can add this project folder must be on your PYTHONPATH.
+
 You should edit your :file:`jupyterhub_config.py` to set the authenticator 
 class::
 
