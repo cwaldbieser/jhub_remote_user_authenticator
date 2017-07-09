@@ -13,7 +13,7 @@ from __future__ import print_function
 import os
 import sys
 
-from distutils.core import setup
+from setuptools import setup
 
 pjoin = os.path.join
 here = os.path.abspath(os.path.dirname(__file__))
