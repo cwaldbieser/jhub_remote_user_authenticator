@@ -9,7 +9,7 @@ the REMOTE_USER header.
 Installation
 ------------
 
-This package can be installed with `pip`:
+This package can be installed with `pip`::
 
     cd jhub_remote_user_authenticator
     pip install .
