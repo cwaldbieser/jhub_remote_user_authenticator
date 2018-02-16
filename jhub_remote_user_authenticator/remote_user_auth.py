@@ -1,4 +1,4 @@
-
+import re
 import os
 from jupyterhub.handlers import BaseHandler
 from jupyterhub.auth import Authenticator
@@ -12,7 +12,11 @@ class RemoteUserLoginHandler(BaseHandler):
 
     def get(self):
         header_name = self.authenticator.header_name
-        remote_user = self.request.headers.get(header_name, "")
+        # Some external login system use mail address format for REMOTE_USER. In case of
+        # RemoteUserLocalAuthenticator, this cause a error as prefix@domain.com is not a valid
+        # format for user. To avoid this, we rename @ to -at- for unix login
+        p = re.compile('@')
+        remote_user = p.sub('-at-', self.request.headers.get(header_name, ""))
         if remote_user == "":
             raise web.HTTPError(401)
         else:
