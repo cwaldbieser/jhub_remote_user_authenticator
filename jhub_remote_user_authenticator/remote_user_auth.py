@@ -18,12 +18,21 @@ class RemoteUserLoginHandler(BaseHandler):
         p = re.compile('@')
         remote_user = p.sub('-at-', self.request.headers.get(header_name, ""))
         if remote_user == "":
-            raise web.HTTPError(401)
+            self.redirect(self.authenticator.login_page)
         else:
             user = self.user_from_username(remote_user)
             self.set_login_cookie(user)
             self.redirect(url_path_join(self.hub.server.base_url, 'home'))
 
+class RemoteUserLogoutHandler(BaseHandler):
+    """Log a user out by clearing their login cookie."""
+    def get(self):
+        user = self.get_current_user()
+        if user is not None:
+            self.log.warning("User logged out: %s", user.name)
+            self.clear_login_cookie()
+            self.statsd.incr('logout')
+            self.redirect(self.authenticator.logout_page)
 
 class RemoteUserAuthenticator(Authenticator):
     """
@@ -33,10 +42,20 @@ class RemoteUserAuthenticator(Authenticator):
         default_value='REMOTE_USER',
         config=True,
         help="""HTTP header to inspect for the authenticated username.""")
-
+    login_page = Unicode(
+        default_value='/',
+        config=True,
+        help="""Location of login page"""
+    )
+    logout_page = Unicode(
+        default_value='/logout',
+        config=True,
+        help="""Location of logout page"""
+    )
     def get_handlers(self, app):
         return [
             (r'/login', RemoteUserLoginHandler),
+            (r'/logout', RemoteUserLogoutHandler),
         ]
 
     @gen.coroutine
@@ -54,10 +73,21 @@ class RemoteUserLocalAuthenticator(LocalAuthenticator):
         default_value='REMOTE_USER',
         config=True,
         help="""HTTP header to inspect for the authenticated username.""")
+    login_page = Unicode(
+        default_value='/',
+        config=True,
+        help="""Location of login page"""
+    )
+    logout_page = Unicode(
+        default_value='/logout',
+        config=True,
+        help="""Location of logout page"""
+    )
 
     def get_handlers(self, app):
         return [
             (r'/login', RemoteUserLoginHandler),
+            (r'/logout', RemoteUserLogoutHandler),
         ]
 
     @gen.coroutine
