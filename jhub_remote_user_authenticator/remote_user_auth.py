@@ -15,10 +15,14 @@ class RemoteUserLoginHandler(BaseHandler):
         remote_user = self.request.headers.get(header_name, "")
         if remote_user == "":
             raise web.HTTPError(401)
-        else:
-            user = self.user_from_username(remote_user)
-            self.set_login_cookie(user)
-            self.redirect(url_path_join(self.hub.server.base_url, 'home'))
+        user = self.user_from_username(remote_user)
+        self.set_login_cookie(user)
+        next_url = self.request.query_arguments.get('next')
+        if isinstance(next_url, list):
+            next_url = next_url[0]
+        elif next_url is None:
+            next_url = url_path_join(self.hub.server.base_url, 'home')
+        self.redirect(next_url)
 
 
 class RemoteUserAuthenticator(Authenticator):
