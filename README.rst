@@ -9,14 +9,14 @@ the REMOTE_USER header.
 Architecture and Security Recommendations
 -----------------------------------------
 
-Because this type of authentication relies on an HTTP header, and a malicious
-client could spoof the REMOTE_USER header, the recommended architecture for this
+This type of authentication relies on an HTTP header, and a malicious
+client could spoof the REMOTE_USER header.  The recommended architecture for this
 type of authentication requires that an authenticating proxy be placed in front
-of your Jupyterhub.  The Jupyerhub should **only** be accessible from the proxy
+of your Jupyterhub.  Your Jupyerhub should **only** be accessible from the proxy
 and **never** directly accessible by a client.  
 
 This type of access is typically enforced with network access controls.  E.g. in
-a simple case the host on which the Jupyterhub service accepts incoming requests
+a simple case, the host on which the Jupyterhub service accepts incoming requests
 has its host based firewall configured to only accept incoming connections from
 the proxy host.
 
