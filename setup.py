@@ -30,7 +30,7 @@ setup_args = dict(
     description         = """REMOTE_USER Authenticator: An Authenticator for Jupyterhub to read user information from HTTP request headers, as when running behind an authenticating proxy.""",
     long_description    = "",
     author              = "Carl (https://github.com/cwaldbieser)",
-    author_email        = "",
+    author_email        = "cwaldbieser@gmail.com",
     url                 = "https://github.com/cwaldbieser/jhub_remote_user_authenticator",
     license             = "GPLv3",
     platforms           = "Linux, Mac OS X",
@@ -43,6 +43,7 @@ setup_args = dict(
         'Programming Language :: Python',
         'Programming Language :: Python :: 3',
     ],
+    data_files          = [('.', ['version.py'])],
 )
 
 # setuptools requirements
