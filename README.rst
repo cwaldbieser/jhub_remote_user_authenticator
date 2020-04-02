@@ -62,6 +62,18 @@ This provides the same authentication functionality but is derived from
 `LocalAuthenticator` and therefore provides features such as the ability
 to add local accounts through the admin interface if configured to do so.
 
+"""""""""
+Overrides
+"""""""""
+
+The following settings can be overridden in `jupyterhub_config.py`::
+
+    # Override the HTTP header that contains the user name.
+    c.RemoteUserAuthenticator.header_name = "MY_HTTP_HEADER"
+
+    # Define a callable that transforms the value obtained from the header.
+    c.RemoteUserAuthenticator.user_transform = staticmethod(lambda x: x.lower())
+
 .. [#f1] The HTTP header name is configurable.  Note that NGINX, a popular
    proxy, drops headers that contain an underscore by default. See
    http://nginx.org/en/docs/http/ngx_http_core_module.html#underscores_in_headers

@@ -13,9 +13,9 @@ class RemoteUserLoginHandler(BaseHandler):
     def get(self):
         header_name = self.authenticator.header_name
         remote_user = self.request.headers.get(header_name, "")
+        remote_user = self.user_transform(remote_user)
         if remote_user == "":
             raise web.HTTPError(401)
-
         user = self.user_from_username(remote_user)
         self.set_login_cookie(user)
         next_url = self.get_next_url(user)
@@ -29,7 +29,10 @@ class RemoteUserAuthenticator(Authenticator):
     header_name = Unicode(
         default_value='REMOTE_USER',
         config=True,
-        help="""HTTP header to inspect for the authenticated username.""")
+        help="""HTTP header to inspect for the authenticated username.""",
+    )
+
+    user_transform = staticmethod(lambda x: x)
 
     def get_handlers(self, app):
         return [
