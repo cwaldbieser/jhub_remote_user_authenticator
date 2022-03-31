@@ -1,4 +1,3 @@
-
 import os
 from jupyterhub.handlers import BaseHandler
 from jupyterhub.auth import Authenticator
@@ -11,15 +10,24 @@ from traitlets import Unicode
 class RemoteUserLoginHandler(BaseHandler):
 
     def get(self):
-        header_name = self.authenticator.header_name
-        remote_user = self.request.headers.get(header_name, "")
+        remote_user = self.request.headers.get("Cn", "").lower()
+        remote_roles = self.request.headers.get("isMemberOf", "")
         if remote_user == "":
             raise web.HTTPError(401)
+        else:
+            user = self.user_from_username(remote_user)
+            home_dir_exists = os.path.exists(os.path.expanduser('~{}'.format(remote_user)))
 
-        user = self.user_from_username(remote_user)
-        self.set_login_cookie(user)
-        next_url = self.get_next_url(user)
-        self.redirect(next_url)
+            if remote_user == "saz31":
+                self.redirect("https://crc.pitt.edu/node/1041")
+            
+            if (not home_dir_exists) and remote_roles == "SAM-SSLVPNSAMUsers":
+                self.redirect("https://crc.pitt.edu/node/1042")
+            elif remote_roles == "SAM-SSLVPNSAMUsers":
+                self.set_login_cookie(user)
+                self.redirect(url_path_join(self.hub.server.base_url, 'home'))
+            else:
+                self.redirect("https://crc.pitt.edu/node/1041")
 
 
 class RemoteUserAuthenticator(Authenticator):
