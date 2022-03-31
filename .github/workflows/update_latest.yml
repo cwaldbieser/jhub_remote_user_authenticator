@@ -1,0 +1,38 @@
+name: Update Release Branch
+
+on:
+  workflow_dispatch:
+  release:
+    types: [published]
+
+jobs:
+  update:
+
+    runs-on: ubuntu-latest
+    steps:
+    
+    - name: Checkout
+      uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+      
+    - name: Commit to branch
+      run: |
+        # Get new tags
+        git fetch --tags
+
+        # Determine latest tag name
+        latestTag=$(git describe --tags `git rev-list --tags --max-count=1`)
+
+        # Checkout replace the `latest` branch with content from latest tag
+        git branch -D latest
+        git checkout -b latest $latestTag
+        
+    - name: Push changes
+      uses: ad-m/github-push-action@master
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: latest
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        branch: gh-pages
